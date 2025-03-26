@@ -1,0 +1,32 @@
+alias: TEST google announcement and resumption of music
+sequence:
+  - data: {}
+    action: script.turn_off
+    target:
+      entity_id:
+        - script.test_google_salon_save_music_state # Name of the script save
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.google_salon_save_music_state # Name of the script save
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - data:
+      entity_id: media_player.XXX # your music player
+      message: test test # announcement
+    action: tts.google_translate_say
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.test_google_salon_restore_music_state # Name of the script restore
+description: ""

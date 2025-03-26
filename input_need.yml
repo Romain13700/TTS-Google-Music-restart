@@ -1,0 +1,13 @@
+#google relance
+input_text:
+  saved_volume:
+    name: Volume saved
+  saved_track:
+    name: piste saved
+
+input_number:
+  saved_position:
+    name: Position saved
+    min: 0
+    max: 3600 # Max 1 hour
+    step: 1

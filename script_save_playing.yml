@@ -1,0 +1,18 @@
+sequence:
+  - data:
+      entity_id: input_text.saved_volume # volume 
+      value: "{{ state_attr('media_player.nest_salon', 'volume_level') }}" # your music player
+    action: input_text.set_value
+  - data:
+      entity_id: input_number.saved_position # position
+      value: >-
+        {{ state_attr('media_player.nest_salon', 'media_position') | default(0) }} # your music player
+    action: input_number.set_value
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: "{{ state_attr('media_player.nest_salon', 'media_content_id') }}" # your music player
+    target:
+      entity_id: input_text.saved_track # track
+alias: Google salon Save Music State
+description: ""

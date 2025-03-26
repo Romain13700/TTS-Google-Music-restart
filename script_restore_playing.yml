@@ -1,0 +1,23 @@
+sequence:
+  - delay:
+      seconds: 2
+  - data:
+      entity_id: media_player.nest_salon # your music player
+      volume_level: "{{ states('input_text.saved_volume') | float }}"
+    action: media_player.volume_set # Volume
+  - action: spotcast.play_media # track
+    data:
+      spotify_uri: "{{ states('input_text.saved_track') }}"
+      account: xxxxxxxxxxxxxxxxxxx # your account spotify ID
+      media_player:
+        entity_id: media_player.nest_salon # your music player
+  - delay:
+      seconds: 2
+  - action: media_player.media_seek # position
+    metadata: {}
+    data:
+      seek_position: "{{ states('input_number.saved_position') }}"
+    target:
+      entity_id: media_player.nest_salon # your music player
+alias: TEST Google Salon Restore Music State
+description: ""
