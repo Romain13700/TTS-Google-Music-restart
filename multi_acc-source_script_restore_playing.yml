@@ -1,0 +1,48 @@
+# For multi accounts and sources
+sequence:
+  - delay:
+      seconds: 2
+  - data:
+      entity_id: media_player.nest_salon # your music player
+      volume_level: "{{ states('input_text.saved_volume') | float }}"
+    action: media_player.volume_set # Volume
+  - if:
+      - condition: state
+        entity_id: input_select.saved_compte # account saved
+        state: Romain
+    then:
+      - action: spotcast.play_media # track
+        data:
+          spotify_uri: "{{ states('input_text.saved_track') }}"
+          account: xxxxxxxxxxxxxxxxxxx # account 1
+          media_player:
+            entity_id: media_player.nest_salon # your music player
+    else:
+      - action: spotcast.play_media # track
+        data:
+          spotify_uri: "{{ states('input_text.saved_track') }}"
+          account: xxxxxxxxxxxxxxxxxxx # account 2
+          media_player:
+            entity_id: media_player.nest_salon # your music player
+  - delay:
+      seconds: 2
+  - action: media_player.media_seek #position
+    metadata: {}
+    data:
+      seek_position: "{{ states('input_number.saved_position') }}"
+    target:
+      entity_id: media_player.nest_salon # your music player
+  - condition: state
+    entity_id: input_boolean.is_playing
+    state: "on"
+  - data:
+      entity_id: media_player.nest_salon # your music player
+    action: media_player.media_play
+  - condition: state
+    entity_id: input_boolean.is_playing
+    state: "off"
+  - data:
+      entity_id: media_player.nest_salon # your music player
+    action: media_player.media_pause
+alias: Google Salon Restore Music State
+description: ""

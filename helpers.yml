@@ -11,3 +11,27 @@ input_number:
     min: 0
     max: 3600 # Max 1 hour
     step: 1
+
+#add for multi source
+
+input_boolean:
+  restaure_music:
+    name: Restaure music
+
+  is_playing:
+    name: is playing
+
+input_select:
+  saved_source:
+    name: Source sauvegardée
+    options:
+      - "maison"
+      - "parents"
+      - "salon"
+      - "cuisine"
+#add for multi account
+  saved_compte:
+    name: Compte sauvegardée
+    options:
+      - "Romain"
+      - "Christelle"

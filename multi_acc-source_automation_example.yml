@@ -1,0 +1,208 @@
+# For multi accounts and sources
+alias: Visiophone announcement google
+description: ""
+triggers:
+  - type: turned_on
+    device_id: #device_id
+    entity_id: #entity_id
+    domain: binary_sensor
+    trigger: device
+conditions: []
+actions:
+#save music
+  - data: {}
+    action: script.turn_off
+    target:
+      entity_id:
+        - script.google_cuisine_restore_music_state
+        - script.google_salon_restore_music_state
+        - script.google_parents_restore_music_state
+        - script.google_maison_restore_music_state
+  - if:
+      - condition: state
+        entity_id: media_player.maison
+        state: playing
+    then:
+      - action: script.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: script.google_maison_save_music_state
+      - action: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.restaure_music
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: maison
+        target:
+          entity_id: input_select.saved_source
+    else:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: media_player.nest_parents
+                state: playing
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_parents_save_music_state
+              - action: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+              - action: input_select.select_option
+                metadata: {}
+                data:
+                  option: parents
+                target:
+                  entity_id: input_select.saved_source
+          - conditions:
+              - condition: state
+                entity_id: media_player.nest_cuisine
+                state: playing
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_cuisine_save_music_state
+              - action: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+              - action: input_select.select_option
+                metadata: {}
+                data:
+                  option: cuisine
+                target:
+                  entity_id: input_select.saved_source
+          - conditions:
+              - condition: state
+                entity_id: media_player.nest_salon
+                state: playing
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_salon_save_music_state
+              - action: input_boolean.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+              - action: input_select.select_option
+                metadata: {}
+                data:
+                  option: salon
+                target:
+                  entity_id: input_select.saved_source
+#Google Annoucement 
+  - target:
+      entity_id:
+        - media_player.maison
+    data:
+      volume_level: 0.7
+    action: media_player.volume_set
+    enabled: true
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+    enabled: true
+  - action: tts.google_translate_say
+    metadata: {}
+    data:
+      cache: false
+      entity_id: media_player.maison
+      message: ça sonne à la porte
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+    enabled: true
+#relauch music
+  - if:
+      - condition: state
+        entity_id: input_select.saved_source
+        state: maison
+      - condition: state
+        entity_id: input_boolean.restaure_music
+        state: "on"
+    then:
+      - action: script.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: script.google_maison_restore_music_state
+      - action: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.restaure_music
+    else:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.restaure_music
+                state: "on"
+              - condition: state
+                entity_id: input_select.saved_source
+                state: parents
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_parents_restore_music_state
+              - action: input_boolean.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.restaure_music
+                state: "on"
+              - condition: state
+                entity_id: input_select.saved_source
+                state: cuisine
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_cuisine_restore_music_state
+              - action: input_boolean.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.restaure_music
+                state: "on"
+              - condition: state
+                entity_id: input_select.saved_source
+                state: salon
+            sequence:
+              - action: script.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: script.google_salon_restore_music_state
+              - action: input_boolean.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.restaure_music
+mode: single

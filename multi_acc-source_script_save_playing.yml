@@ -1,0 +1,58 @@
+# For multi accounts and sources
+sequence:
+  - choose: # save account
+      - conditions:
+          - condition: state
+            entity_id: media_player.spotify_christelle
+            state: playing
+        sequence:
+          - action: input_select.select_option
+            metadata: {}
+            data:
+              option: Christelle
+            target:
+              entity_id: input_select.saved_compte
+      - conditions:
+          - condition: state
+            entity_id: media_player.spotify_romain
+            state: playing
+        sequence:
+          - action: input_select.select_option
+            metadata: {}
+            data:
+              option: Romain
+            target:
+              entity_id: input_select.saved_compte
+  - data: # Volume
+      entity_id: input_text.saved_volume
+      value: "{{ state_attr('media_player.nest_salon', 'volume_level') }}"
+    action: input_text.set_value
+  - data: # track position
+      entity_id: input_number.saved_position
+      value: >-
+        {{ state_attr('media_player.nest_salon', 'media_position') | default(0)
+        }}
+    action: input_number.set_value
+  - action: input_text.set_value # Track
+    metadata: {}
+    data:
+      value: "{{ state_attr('media_player.nest_salon', 'media_content_id') }}"
+    target:
+      entity_id: input_text.saved_track
+  - data:
+      entity_id: input_boolean.is_playing
+    action: input_boolean.turn_on
+  - condition: state
+    entity_id: media_player.nest_salon
+    state: playing
+  - data:
+      entity_id: input_boolean.is_playing
+    action: input_boolean.turn_on
+  - condition: state
+    entity_id: media_player.nest_salon
+    state: paused
+  - data:
+      entity_id: input_boolean.is_playing
+    action: input_boolean.turn_off
+alias: Google salon Save Music State
+description: ""
